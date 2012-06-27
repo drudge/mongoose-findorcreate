@@ -1,7 +1,7 @@
 {
     "name": "supergoose"
   , "description": "Mongoose plugin for simple addons like find or create" 
-  , "version": "1.0.0"
+  , "version": "1.0.1"
   , "author": "Matt Roman"
   , "keywords": ["supergoose", "mongodb", "mongoose", "plugin", "findOrCreate"]
   , "repository": {
