@@ -1,9 +1,14 @@
 var mocha = require('mocha')
   , should = require('should')
-  , sinon = require('sinon')
   , mongoose = require('mongoose')
   , Schema = mongoose.Schema
   , supergoose = require('../index.js')
+
+mongoose.connect('mongodb://localhost:27017/supergoose')
+mongoose.connection.on('error', function (err) {
+    console.error('MongoDB error: ' + err.message);
+      console.error('Make sure a mongoDB server is running and accessible by this application')
+});
 
 var ClickSchema = new Schema({
   ip : String
@@ -12,22 +17,30 @@ var ClickSchema = new Schema({
 ClickSchema.plugin(supergoose);
 var Click = mongoose.model('Click', ClickSchema);
 
+after(function(done) {
+  mongoose.connection.db.dropDatabase()
+  done();
+})
+
 describe('findOrCreate', function() {
-  it("should return the object if it exists", sinon.test(function(done) {
-    this.stub(Click, 'findOne').yields(null, {ip: '127.0.0.1'})
+  it("should create the obeject if it doesn't exist", function(done) {
     Click.findOrCreate({ip: '127.0.0.1'}, function(err, click) {
-      click.should.eql({ip: '127.0.0.1'})
+      click.ip.should.eql('127.0.0.1')
+      Click.count({}, function(err, num) {
+        num.should.equal(1)
+        done();
+      })
     })
-  }))
+  })
 
-  it("check to see if the object exists", sinon.test(function() {
-    this.mock(Click).expects('findOne')
-    Click.findOrCreate({ip: '127.0.0.1'}, function(err, click) {})
-  }))
-
-  it("should call create if it doesn't exist", sinon.test(function() {
-    this.stub(Click, 'findOne').yields(null, null);
-    this.stub(Click, 'create').withArgs({ip: '127.0.0.1'})
-    Click.findOrCreate({ip: '127.0.0.1'}, function(err, click) {})
-  }))
+  it("returns the object if it already exists", function(done) {
+    Click.create({ip: '127.0.0.1'})
+    Click.findOrCreate({ip: '127.0.0.1'}, function(err, click) {
+      click.ip.should.eql('127.0.0.1')
+      Click.count({}, function(err, num) {
+        num.should.equal(1)
+        done();
+      })
+    })
+  })
 })
