@@ -11,7 +11,8 @@ mongoose.connection.on('error', function (err) {
 });
 
 var ClickSchema = new Schema({
-  ip : {type: String, required: true}
+    ip : {type: String, required: true}
+  , browser: String
 })
 
 var messages =  {
@@ -21,8 +22,8 @@ var messages =  {
 ClickSchema.plugin(supergoose, {messages: messages});
 var Click = mongoose.model('Click', ClickSchema);
 
-after(function(done) {
-  mongoose.connection.db.dropDatabase()
+beforeEach(function(done) {
+  Click.collection.remove()
   done();
 })
 
@@ -38,12 +39,32 @@ describe('findOrCreate', function() {
   })
 
   it("returns the object if it already exists", function(done) {
-    Click.create({ip: '127.0.0.1'})
-    Click.findOrCreate({ip: '127.0.0.1'}, function(err, click) {
-      click.ip.should.eql('127.0.0.1')
-      Click.count({}, function(err, num) {
-        num.should.equal(1)
+    Click.create({ip: '127.0.0.1'}, function(err, val) {
+      Click.findOrCreate({ip: '127.0.0.1'}, function(err, click) {
+        click.ip.should.eql('127.0.0.1')
+        Click.count({}, function(err, num) {
+          num.should.equal(1)
+          done();
+        })
+      })
+    })
+  })
+
+  describe('with extra properties', function() {
+    it("extends the object with additional properties", function(done) {
+      Click.findOrCreate({ip: '127.0.0.1'}, {browser: 'Mozilla'}, function(err, click) {
+        click.should.have.property('ip', '127.0.0.1')
+        click.should.have.property('browser', 'Mozilla')
         done();
+      })
+    })
+
+    it("finds the object without extra params", function(done) {
+      Click.create({ip: '127.0.0.1', browser: 'Chrome'}, function(err, val) {
+        Click.findOrCreate({ip: '127.0.0.1'}, {browser: 'IE'}, function(err, click) {
+          click.should.have.property('browser', 'Chrome')
+          done();
+        })
       })
     })
   })
