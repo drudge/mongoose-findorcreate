@@ -12,10 +12,9 @@ module.exports = exports = function superGoosePlugin(schema, options) {
         callback = options;
         options = {};
       } else if (_.isFunction(doc)) {
-        // Scenario: findOrCreate(doc, callback);
+        // Scenario: findOrCreate(conditions, callback);
         callback = doc;
-        doc = conditions;
-        conditions = {};
+        doc = {};
         options = {};
       }
     }
