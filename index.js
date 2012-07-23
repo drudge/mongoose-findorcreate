@@ -5,17 +5,33 @@ _.mixin(_.str.exports());
 module.exports = exports = function superGoosePlugin(schema, options) {
   if(options) var messages = options.messages 
 
-  schema.statics.findOrCreate = function findOrCreate(object, properties, callback) {
-    if(_.isFunction(properties)) {
-      callback = properties
-      properties = {}
+  schema.statics.findOrCreate = function findOrCreate(conditions, doc, options, callback) {
+    if (arguments.length < 4) {
+      if (_.isFunction(options)) {
+        // Scenario: findOrCreate(conditions, doc, callback)
+        callback = options;
+        options = {};
+      } else if (_.isFunction(doc)) {
+        // Scenario: findOrCreate(doc, callback);
+        callback = doc;
+        doc = conditions;
+        conditions = {};
+        options = {};
+      }
     }
     var self = this;
-    this.findOne(object, function(err, result) {
+    this.findOne(conditions, function(err, result) {
       if(err || result) {
-        callback(err, result)
+        if(options && options.upsert && !err) {
+          self.update(result, doc, function(err, count){
+            self.findOne(conditions, callback);
+          })
+        } else {
+          callback(err, result)
+        }
       } else {
-        var obj = new self(_.extend(object, properties))
+        _.extend(conditions, doc)
+        var obj = new self(conditions)
         obj.save(function(err) {
           callback(err, obj)
         });

@@ -22,7 +22,7 @@ var messages =  {
 ClickSchema.plugin(supergoose, {messages: messages});
 var Click = mongoose.model('Click', ClickSchema);
 
-beforeEach(function(done) {
+afterEach(function(done) {
   Click.collection.remove()
   done();
 })
@@ -64,6 +64,20 @@ describe('findOrCreate', function() {
         Click.findOrCreate({ip: '127.0.0.1'}, {browser: 'IE'}, function(err, click) {
           click.should.have.property('browser', 'Chrome')
           done();
+        })
+      })
+    })
+  })
+
+  describe('with upsert', function() {
+    it("updates the existing object", function(done) {
+      Click.create({ip: '127.0.0.1', browser: 'Chrome'}, function(err, val) {
+        Click.findOrCreate({ip: '127.0.0.1'}, {browser: 'IE'}, {upsert: true}, function(err, click) {
+          click.should.have.property('browser', 'IE')
+          Click.count({}, function(err, num) {
+            num.should.equal(1)
+            done();
+          })
         })
       })
     })
