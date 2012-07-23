@@ -23,7 +23,7 @@ module.exports = exports = function superGoosePlugin(schema, options) {
     this.findOne(conditions, function(err, result) {
       if(err || result) {
         if(options && options.upsert && !err) {
-          self.update(result, doc, function(err, count){
+          self.update(conditions, doc, function(err, count){
             self.findOne(conditions, callback);
           })
         } else {
