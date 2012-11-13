@@ -1,8 +1,9 @@
 Mongoose findOrCreate Plugin
 ============================
 
-[Mongoose](https://github.com/LearnBoost/mongoose) simple plugin adding a 
-findOrCreate method to models. 
+Simple plugin for [Mongoose](https://github.com/LearnBoost/mongoose) which adds 
+a findOrCreate method to models. This is useful for libraries like 
+[Passport](http://passportjs.org) which require it.
 
 ## Installation
 
@@ -47,7 +48,8 @@ Click.create({ip: '127.0.0.1'}, {browser: 'Mozilla'}, function(err, val) {
 (The MIT License)
 
 Copyright (c) 2012 Nicholas Penree &lt;nick@penree.com&gt;
-Based on supergoose: Copyright (c) 2012 Jamplify
+
+Based on [supergoose](https://github.com/jamplify/supergoose): Copyright (c) 2012 Jamplify
 
 Permission is hereby granted, free of charge, to any person obtaining
 a copy of this software and associated documentation files (the
