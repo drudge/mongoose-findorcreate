@@ -1,17 +1,17 @@
-var _ = require('underscore') 
-_.str = require('underscore.string');
-_.mixin(_.str.exports());
+/*!
+ * Mongoose findOrCreate Plugin
+ * Copyright(c) 2012 Nicholas Penree <nick@penree.com>
+ * MIT Licensed
+ */
 
-module.exports = exports = function superGoosePlugin(schema, options) {
-  if(options) var messages = options.messages 
-
+function findOrCreatePlugin(schema, options) {
   schema.statics.findOrCreate = function findOrCreate(conditions, doc, options, callback) {
     if (arguments.length < 4) {
-      if (_.isFunction(options)) {
+      if (typeof options === 'function') {
         // Scenario: findOrCreate(conditions, doc, callback)
         callback = options;
         options = {};
-      } else if (_.isFunction(doc)) {
+      } else if (typeof doc === 'function') {
         // Scenario: findOrCreate(conditions, callback);
         callback = doc;
         doc = {};
@@ -29,7 +29,9 @@ module.exports = exports = function superGoosePlugin(schema, options) {
           callback(err, result)
         }
       } else {
-        _.extend(conditions, doc)
+        for (var key in conditions) {
+         doc[key] = conditions[key]; 
+        }
         var obj = new self(conditions)
         obj.save(function(err) {
           callback(err, obj)
@@ -37,12 +39,10 @@ module.exports = exports = function superGoosePlugin(schema, options) {
       }
     })
   }
-
-  schema.statics.errors = function errors(errors, callback) {
-    errors = _.toArray(errors.errors)
-    errors = _.map(errors, function(error) {
-       return _.sprintf(messages[error.type], error.path) 
-    })
-    callback(errors)
-  }
 }
+
+/**
+ * Expose `findOrCreatePlugin`.
+ */
+
+module.exports = findOrCreatePlugin;

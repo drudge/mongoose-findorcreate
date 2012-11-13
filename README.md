@@ -1,35 +1,19 @@
-supergoose
-==================
+Mongoose findOrCreate Plugin
+============================
 
-[Mongoose](https://github.com/LearnBoost/mongoose) simple plugin adding some 
-handy functions. 
+[Mongoose](https://github.com/LearnBoost/mongoose) simple plugin adding a 
+findOrCreate method to models. 
 
-```javasript
-/* Adds find or create functionality to mongoose models. This is handy
- * for libraries like passport.js which require it
- */
-Model.findOrCreate()
+## Installation
 
-/* Parses the complex validation errors return from mongoose into a simple
- * array of messages to be displayed as flash messages or something similar
- */
-Model.errors()
-```
+`npm install mongoose-findorcreate`
 
-Installation
-------------
-
-`npm install supergoose`
-
-Usage
------
-
-# findOrCreate
+## Usage
 
 ```javascript
-var supergoose = require('supergoose')
+var findOrCreate = require('mongoose-findorcreate')
 var ClickSchema = new Schema({ ... });
-Click.plugin(supergoose);
+ClickSchema.plugin(findOrCreate);
 var Click = mongoose.model('Click', ClickSchema);
 ```
 
@@ -56,28 +40,28 @@ Click.create({ip: '127.0.0.1'}, {browser: 'Mozilla'}, function(err, val) {
 });
 ```
 
-# errors
-```javascript
-var supergoose = require('supergoose')
-var ClickSchema = new Schema({ip: {type: String, required: true}});
-Click.plugin(supergoose, {messages: {'required': '%s is a required field'}});
-var Click = mongoose.model('Click', ClickSchema);
-```
+## License 
 
-The Click model now has an errors static method
+(The MIT License)
 
-```javascript
-Click.create({}, function(err, click) {
-  if(err) {
-    Click.errors(err, function(messages) {
-      console.log(messages);
-      // outputs ['ip is a required field']
-    }) 
-  }
-});
-```
-      
-License
--------
+Copyright (c) 2012 Nicholas Penree &lt;nick@penree.com&gt;
+Based on supergoose: Copyright (c) 2012 Jamplify
 
-MIT License
+Permission is hereby granted, free of charge, to any person obtaining
+a copy of this software and associated documentation files (the
+'Software'), to deal in the Software without restriction, including
+without limitation the rights to use, copy, modify, merge, publish,
+distribute, sublicense, and/or sell copies of the Software, and to
+permit persons to whom the Software is furnished to do so, subject to
+the following conditions:
+
+The above copyright notice and this permission notice shall be
+included in all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED 'AS IS', WITHOUT WARRANTY OF ANY KIND,
+EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.
+IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY
+CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT,
+TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE
+SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
