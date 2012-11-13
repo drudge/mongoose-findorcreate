@@ -20,9 +20,11 @@ var Click = mongoose.model('Click', ClickSchema);
 The Click model now has a findOrCreate static method
 
 ```javascript
-Click.findOrCreate({ip: '127.0.0.1'}, function(err, click) {
+Click.findOrCreate({ip: '127.0.0.1'}, function(err, click, created) {
+  // created will be true here
   console.log('A new click from "%s" was inserted', click.ip);
-  Click.findOrCreate({}, function(err, click) {
+  Click.findOrCreate({}, function(err, click, created) {
+    // created will be false here
     console.log('Did not create a new click for "%s"', click.ip);
   })
 });

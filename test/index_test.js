@@ -38,7 +38,7 @@ describe('findOrCreate', function() {
       })
     })
   })
-
+  
   it("returns the object if it already exists", function(done) {
     Click.create({ip: '127.0.0.1'})
     Click.findOrCreate({ip: '127.0.0.1'}, function(err, click) {
@@ -49,4 +49,17 @@ describe('findOrCreate', function() {
       })
     })
   })
-})
+  
+  it("should pass created as true if the object didn't exist", function(done) {
+    Click.findOrCreate({ip: '127.1.1.1'}, function(err, click, created) {
+      created.should.eql(true);
+      done();
+    })
+  })
+  
+  it("should pass created as false if the object already exists", function(done) {
+    Click.findOrCreate({ip: '127.1.1.1'}, function(err, click, created) {
+      created.should.eql(false);
+      done();
+    })
+  })})

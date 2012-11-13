@@ -23,10 +23,12 @@ function findOrCreatePlugin(schema, options) {
       if(err || result) {
         if(options && options.upsert && !err) {
           self.update(conditions, doc, function(err, count){
-            self.findOne(conditions, callback);
+            self.findOne(conditions, function(err, result) {
+              callback(err, result, false);
+            });
           })
         } else {
-          callback(err, result)
+          callback(err, result, false)
         }
       } else {
         for (var key in conditions) {
@@ -34,7 +36,7 @@ function findOrCreatePlugin(schema, options) {
         }
         var obj = new self(conditions)
         obj.save(function(err) {
-          callback(err, obj)
+          callback(err, obj, true);
         });
       }
     })
