@@ -1,4 +1,4 @@
-Mongoose findOrCreate Plugin
+Mongoose findOrCreate Plugin [![Build Status](https://secure.travis-ci.org/drudge/mongoose-findorcreate.png?branch=master)](https://travis-ci.org/drudge/mongoose-findorcreate)
 ============================
 
 Simple plugin for [Mongoose](https://github.com/LearnBoost/mongoose) which adds 
