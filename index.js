@@ -34,7 +34,7 @@ function findOrCreatePlugin(schema, options) {
         for (var key in conditions) {
          doc[key] = conditions[key]; 
         }
-        var obj = new self(conditions)
+        var obj = new self(doc)
         obj.save(function(err) {
           callback(err, obj, true);
         });
