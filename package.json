@@ -1,7 +1,7 @@
 {
     "name": "mongoose-findorcreate"
   , "description": "Mongoose plugin that adds findOrCreate" 
-  , "version": "0.1.0"
+  , "version": "0.1.1"
   , "author": "Matt Roman <romanmt@gmail.com>"
   , "keywords": ["mongodb", "mongoose", "plugin", "findOrCreate"]
   , "repository": {
