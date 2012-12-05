@@ -31,10 +31,10 @@ function findOrCreatePlugin(schema, options) {
           callback(err, result, false)
         }
       } else {
-        for (var key in conditions) {
-         doc[key] = conditions[key]; 
+        for (var key in doc) {
+         conditions[key] = doc[key]; 
         }
-        var obj = new self(doc)
+        var obj = new self(conditions)
         obj.save(function(err) {
           callback(err, obj, true);
         });
