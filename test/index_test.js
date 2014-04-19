@@ -38,25 +38,26 @@ describe('findOrCreate', function() {
       })
     })
   })
-  
+
   it("returns the object if it already exists", function(done) {
-    Click.create({ip: '127.0.0.1'})
-    Click.findOrCreate({ip: '127.0.0.1'}, function(err, click) {
-      click.ip.should.eql('127.0.0.1')
-      Click.count({}, function(err, num) {
-        num.should.equal(1)
-        done();
+    Click.create({ip: '127.0.0.2'}, function(){
+      Click.findOrCreate({ip: '127.0.0.2'}, function(err, click) {
+        click.ip.should.eql('127.0.0.2')
+        Click.count({ip: '127.0.0.2'}, function(err, num) {
+          num.should.equal(1)
+          done();
+        })
       })
     })
   })
-  
+
   it("should pass created as true if the object didn't exist", function(done) {
     Click.findOrCreate({ip: '127.1.1.1'}, function(err, click, created) {
       created.should.eql(true);
       done();
     })
   })
-  
+
   it("should pass created as false if the object already exists", function(done) {
     Click.findOrCreate({ip: '127.1.1.1'}, function(err, click, created) {
       created.should.eql(false);
