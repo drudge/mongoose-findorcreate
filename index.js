@@ -35,14 +35,14 @@ var findOrCreatePlugin = function(schema, options) {
         var that = this;
         return new Promise(function(resolve, reject){
 
-          var callback = function(err, object){
+          var callback = function(err, object, created){
             if(err){
               reject(err);
             } else {
-              resolve(object);
+              resolve(object, created);
             }
           }
-          
+
           doFindOrCreate.call(that, conditions, doc, options, callback);
         });
       } else {
