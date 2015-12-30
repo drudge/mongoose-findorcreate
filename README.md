@@ -43,6 +43,17 @@ Click.create({ip: '127.0.0.1'}, {browser: 'Mozilla'}, function(err, val) {
 });
 ```
 
+The libarary now supports promises if your version of node supports Promises.
+To get the promise result - pass no callback to the findOrCreate function. 
+
+```javascript
+var promise = Click.findOrCreate({ip: '127.0.0.1'}).then(function(click, created){
+  console.log('A click from "%s" using "%s" was found', click.ip, click.browser);
+}, function(error){
+  console.log('Error: '+error);
+});
+```
+
 ## License 
 
 (The MIT License)
