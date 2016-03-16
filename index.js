@@ -37,11 +37,11 @@ function findOrCreatePlugin(schema, options) {
         // If the value contain `$` remove the key value pair
         var keys = Object.keys(conditions);
 
-        keys.forEach(function (key) {
-          if (JSON.stringify(conditions[key]).indexOf('$') !== -1) {
+        for (var z = 0; z < keys.length; z++){
+          if (JSON.stringify(conditions[keys[z]]).indexOf('$') !== -1) {
             delete conditions[key];
           }
-        });
+        };
 
         var obj = new self(conditions)
         obj.save(function(err) {
