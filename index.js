@@ -32,8 +32,16 @@ function findOrCreatePlugin(schema, options) {
         }
       } else {
         for (var key in doc) {
-         conditions[key] = doc[key]; 
+         conditions[key] = doc[key];
         }
+        // If the value contain `$` remove the key value pair
+        var keys = Object.keys(conditions);
+
+        keys.forEach((key) => {
+          if (JSON.stringify(conditions[key]).indexOf('$') !== -1) {
+            delete conditions[key];
+          }
+        });
         var obj = new self(conditions)
         obj.save(function(err) {
           callback(err, obj, true);
