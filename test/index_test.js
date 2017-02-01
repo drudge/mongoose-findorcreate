@@ -63,4 +63,18 @@ describe('findOrCreate', function() {
       created.should.eql(false);
       done();
     })
-  })})
+  })
+
+  it("should not add properties with a $ when creating the object", function(done) {
+    Click.findOrCreate({
+      ip: '127.2.2.2',
+      subnet: { $exists: true }
+    }, function(err, click, created) {
+      click.should.be.an.Object;
+      click.ip.should.eql('127.2.2.2');
+      should.not.exist(click.subnet);
+      created.should.eql(true);
+      done();
+    })
+  })
+})
