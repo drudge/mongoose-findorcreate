@@ -1,8 +1,8 @@
 {
     "name": "mongoose-findorcreate"
-  , "description": "Mongoose plugin that adds findOrCreate" 
-  , "version": "0.1.2"
-  , "author": "Matt Roman <romanmt@gmail.com>"
+  , "description": "Mongoose plugin that adds findOrCreate"
+  , "version": "1.0.0"
+  , "author": "Nicholas Penree <nick@penree.com>"
   , "keywords": ["mongodb", "mongoose", "plugin", "findOrCreate"]
   , "repository": {
       "type": "git"
@@ -18,6 +18,6 @@
     }
   , "license": "MIT"
   , "engine": {
-      "node": ">= 0.6"
+      "node": ">= 0.10"
     }
 }
