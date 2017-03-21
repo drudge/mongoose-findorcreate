@@ -16,7 +16,8 @@ mongoose.connection.on('error', function (err) {
 });
 
 var ClickSchema = new Schema({
-  ip : {type: String, required: true}
+  ip : {type: String, required: true},
+  hostname : {type: String, required: false}
 })
 
 ClickSchema.plugin(findOrCreate);
@@ -73,6 +74,24 @@ describe('findOrCreate', function() {
       click.should.be.an.Object;
       click.ip.should.eql('127.2.2.2');
       should.not.exist(click.subnet);
+      created.should.eql(true);
+      done();
+    })
+  })
+
+  it("should not add properties with a $ when creating an object different from the find call", function(done) {
+    Click.findOrCreate({
+      ip: '127.3.3.3',
+      subnet: { $exists: true }
+    }, {
+      ip: '127.3.3.3',
+      subnet: { $exists: true },
+      hostname: 'noplacelikehome'
+    }, function(err, click, created) {
+      click.should.be.an.Object;
+      click.ip.should.eql('127.3.3.3');
+      should.not.exist(click.subnet);
+      click.hostname.should.eql('noplacelikehome');
       created.should.eql(true);
       done();
     })
