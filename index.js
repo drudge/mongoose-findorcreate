@@ -34,12 +34,13 @@ function findOrCreatePlugin(schema, options) {
         for (var key in doc) {
          conditions[key] = doc[key];
         }
+
         // If the value contain `$` remove the key value pair
         var keys = Object.keys(conditions);
 
         for (var z = 0; z < keys.length; z++){
           if (JSON.stringify(conditions[keys[z]]).indexOf('$') !== -1) {
-            delete conditions[key];
+            delete conditions[keys[z]];
           }
         };
 
