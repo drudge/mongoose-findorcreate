@@ -19,7 +19,7 @@ function findOrCreatePlugin(schema, options) {
       }
     }
     var self = this;
-    this.findOne(conditions, function(err, result) {
+    this.find(conditions, function(err, result) {
       if(err || result) {
         if(options && options.upsert && !err) {
           self.update(conditions, doc, function(err, count){
