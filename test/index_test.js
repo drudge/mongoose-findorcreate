@@ -96,4 +96,37 @@ describe('findOrCreate', function() {
       done();
     })
   })
+
+  it("should support upsert", function(done) {
+    // Create something to upsert.
+    new Click({
+      ip: '128.0.0.0',
+    }).save(function (err, click) {
+      click.should.be.an.Object;
+      click.ip.should.eql('128.0.0.0');
+      should.equal(click.hostname, null);
+      // Upsert to add a hostname.
+      Click.findOrCreate({
+        ip: '128.0.0.0',
+      }, {
+        hostname: 'example.org',
+      }, {
+        upsert: true,
+      }, function (err, click, created) {
+        click.should.be.an.Object;
+        click.ip.should.eql('128.0.0.0');
+        click.hostname.should.eql('example.org');
+        created.should.eql(false);
+        // Verify that it actually was updated in the database.
+        Click.findOne({
+          ip: '128.0.0.0',
+        }, function (err, click) {
+          click.should.be.an.Object;
+          click.ip.should.eql('128.0.0.0');
+          click.hostname.should.eql('example.org');
+          done();
+        });
+      });
+    });
+  })
 })
