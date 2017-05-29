@@ -1,8 +1,8 @@
 Mongoose findOrCreate Plugin [![Build Status](https://secure.travis-ci.org/drudge/mongoose-findorcreate.png?branch=master)](https://travis-ci.org/drudge/mongoose-findorcreate)
 ============================
 
-Simple plugin for [Mongoose](https://github.com/LearnBoost/mongoose) which adds 
-a findOrCreate method to models. This is useful for libraries like 
+Simple plugin for [Mongoose](https://github.com/LearnBoost/mongoose) which adds
+a findOrCreate method to models. This is useful for libraries like
 [Passport](http://passportjs.org) which require it.
 
 ## Installation
@@ -31,7 +31,7 @@ Click.findOrCreate({ip: '127.0.0.1'}, function(err, click, created) {
 });
 ```
 
-You can also include properties that aren't used in the 
+You can also include properties that aren't used in the
 find call, but will be added to the object if it is created.
 
 ```javascript
@@ -61,11 +61,11 @@ Click.findOrCreate({ip: '127.0.0.2'}).then(function (result) {
 })
 ```
 
-## License 
+## License
 
 (The MIT License)
 
-Copyright (c) 2012 Nicholas Penree &lt;nick@penree.com&gt;
+Copyright (c) 2012-2017 Nicholas Penree &lt;nick@penree.com&gt;
 
 Based on [supergoose](https://github.com/jamplify/supergoose): Copyright (c) 2012 Jamplify
 
