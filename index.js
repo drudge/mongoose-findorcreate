@@ -38,7 +38,7 @@ function findOrCreatePlugin(schema, options) {
       if(err || result) {
         if(options && options.upsert && !err) {
           self.update(conditions, doc, function(err, count){
-            self.findOne(conditions, function(err, result) {
+            self.findById(result._id, function(err, result) {
               callback(err, result, false);
             });
           })

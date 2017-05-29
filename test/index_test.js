@@ -97,6 +97,69 @@ describe('findOrCreate', function() {
     })
   })
 
+
+  it("should support upsert", function(done) {
+    // Create something to upsert.
+    new Click({
+      ip: '128.0.0.0',
+    }).save(function (err, click) {
+      click.should.be.an.Object;
+      click.ip.should.eql('128.0.0.0');
+      should.equal(click.hostname, null);
+      // Upsert to add a hostname.
+      Click.findOrCreate({
+        ip: '128.0.0.0',
+      }, {
+        hostname: 'example.org',
+      }, {
+        upsert: true,
+      }, function (err, click, created) {
+        click.should.be.an.Object;
+        click.ip.should.eql('128.0.0.0');
+        click.hostname.should.eql('example.org');
+        created.should.eql(false);
+        // Verify that it actually was updated in the database.
+        Click.findOne({
+          ip: '128.0.0.0',
+        }, function (err, click) {
+          click.should.be.an.Object;
+          click.ip.should.eql('128.0.0.0');
+          click.hostname.should.eql('example.org');
+          done();
+        });
+      });
+    });
+  })
+
+  it("should return updated instance after upserting away from the condition", function(done) {
+    // Create something to upsert.
+    new Click({
+      ip: '128.1.1.1',
+    }).save(function(err, click) {
+      var _id = click._id;
+      click.should.be.an.Object;
+      click.ip.should.eql('128.1.1.1');
+      // Upsert in such a way that it no longer matches conditions.
+      Click.findOrCreate({
+        ip: '128.1.1.1',
+      }, {
+        ip: '128.1.1.2',
+      }, {
+        upsert: true,
+      }, function(err, click, created) {
+        // Should have returned upserted object even though it no
+        // longer matches the conditions.
+        click.should.be.an.Object
+        click.ip.should.eql('128.1.1.2');
+        created.should.eql(false);
+        // Verify that it actually was updated in the database.
+        Click.findById(_id, function (err, click) {
+          click.should.be.an.Object;
+          click.ip.should.eql('128.1.1.2');
+          done();
+        })
+      })
+
   it("should return a Promise when passed conditions", function() {
     var ret = Click.findOrCreate({
       ip: '127.4.4.4',
