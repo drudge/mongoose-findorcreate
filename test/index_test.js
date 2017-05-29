@@ -129,4 +129,35 @@ describe('findOrCreate', function() {
       });
     });
   })
+
+  it("should return updated instance after upserting away from the condition", function(done) {
+    // Create something to upsert.
+    new Click({
+      ip: '128.1.1.1',
+    }).save(function(err, click) {
+      var _id = click._id;
+      click.should.be.an.Object;
+      click.ip.should.eql('128.1.1.1');
+      // Upsert in such a way that it no longer matches conditions.
+      Click.findOrCreate({
+        ip: '128.1.1.1',
+      }, {
+        ip: '128.1.1.2',
+      }, {
+        upsert: true,
+      }, function(err, click, created) {
+        // Should have returned upserted object even though it no
+        // longer matches the conditions.
+        click.should.be.an.Object
+        click.ip.should.eql('128.1.1.2');
+        created.should.eql(false);
+        // Verify that it actually was updated in the database.
+        Click.findById(_id, function (err, click) {
+          click.should.be.an.Object;
+          click.ip.should.eql('128.1.1.2');
+          done();
+        })
+      })
+    })
+  })
 })
