@@ -96,4 +96,50 @@ describe('findOrCreate', function() {
       done();
     })
   })
+
+  it("should return a Promise when passed conditions", function() {
+    var ret = Click.findOrCreate({
+      ip: '127.4.4.4',
+    });
+    ret.should.be.a.Promise;
+    return ret.then(function(click) {
+      click.should.be.an.Object;
+      click.doc.should.be.an.Object;
+      click.doc.ip.should.eql('127.4.4.4');
+      click.created.should.eql(true);
+    })
+  })
+
+  it("should return a Promise when passed conditions, doc", function() {
+    var ret = Click.findOrCreate({
+      ip: '127.4.4.4',
+    }, {
+      ip: '127.5.5.5',
+    });
+    ret.should.be.a.Promise;
+    return ret.then(function(result) {
+      result.should.be.an.Object;
+      result.doc.should.be.an.Object;
+      result.doc.ip.should.eql('127.4.4.4');
+      result.created.should.eql(false);
+    })
+  })
+
+  it("should return a Promise when passed conditions, doc, options", function() {
+    var ret = Click.findOrCreate({
+      ip: '127.4.4.4',
+    }, {
+      ip: '127.5.5.5',
+    }, {
+      upsert: true,
+    });
+    ret.should.be.a.Promise;
+    return ret.then(function (result) {
+      result.should.be.an.Object;
+      // After an upsert, the object no longer matches, so expect
+      // null (that is a bug, right?):
+      should.equal(result.doc, null);
+      result.created.should.eql(false);
+    })
+  })
 })

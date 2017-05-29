@@ -6,6 +6,8 @@
 
 function findOrCreatePlugin(schema, options) {
   schema.statics.findOrCreate = function findOrCreate(conditions, doc, options, callback) {
+    var self = this;
+    var Promise = self.base.Promise.ES6;
     if (arguments.length < 4) {
       if (typeof options === 'function') {
         // Scenario: findOrCreate(conditions, doc, callback)
@@ -16,9 +18,22 @@ function findOrCreatePlugin(schema, options) {
         callback = doc;
         doc = {};
         options = {};
+      } else {
+        // Scenario: findOrCreate(conditions[, doc[, options]])
+        return new Promise(function(resolve, reject) {
+          self.findOrCreate(conditions, doc, options, function (ex, result, created) {
+            if (ex) {
+              reject(ex);
+            } else {
+              resolve({
+                doc: result,
+                created: created,
+              });
+            }
+          });
+        });
       }
     }
-    var self = this;
     this.findOne(conditions, function(err, result) {
       if(err || result) {
         if(options && options.upsert && !err) {

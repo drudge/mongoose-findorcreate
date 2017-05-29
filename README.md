@@ -43,6 +43,24 @@ Click.create({ip: '127.0.0.1'}, {browser: 'Mozilla'}, function(err, val) {
 });
 ```
 
+### Promise Support
+
+Choose your Promise library by setting
+[`Mongoose.Promise`](http://mongoosejs.com/docs/promises.html).
+
+The returned `Promise` shall resolve to an object with keys `doc` and
+`created` on success. It shall be rejected with `err` on failure.
+
+```javascript
+// Use environment-provided Promise (necessary to silence a Mongoose warning).
+mongoose.Promise = Promise;
+// To a findOrCreate().
+Click.findOrCreate({ip: '127.0.0.2'}).then(function (result) {
+  click = result.doc;
+  console.log('A click from', click.ip, ' using ', click.browser, ' was ', click.created ? 'created' : 'found');
+})
+```
+
 ## License 
 
 (The MIT License)
