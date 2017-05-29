@@ -159,6 +159,8 @@ describe('findOrCreate', function() {
           done();
         })
       })
+    })
+  })
 
   it("should return a Promise when passed conditions", function() {
     var ret = Click.findOrCreate({
@@ -199,9 +201,8 @@ describe('findOrCreate', function() {
     ret.should.be.a.Promise;
     return ret.then(function (result) {
       result.should.be.an.Object;
-      // After an upsert, the object no longer matches, so expect
-      // null (that is a bug, right?):
-      should.equal(result.doc, null);
+      result.doc.should.be.an.Object;
+      result.doc.ip.should.eql('127.5.5.5');
       result.created.should.eql(false);
     })
   })
