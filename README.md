@@ -1,3 +1,21 @@
+You have a bug DRUDGE
+
+ =>  TypeError: Cannot read property 'indexOf' of undefined
+    at /Users/alexamil/WebstormProjects/cdt-now/node_modules/mongoose-findorcreate/index.js:42:50
+    at Query.<anonymous> (/Users/alexamil/WebstormProjects/cdt-now/node_modules/mongoose/lib/model.js:3435:16)
+    at /Users/alexamil/WebstormProjects/cdt-now/node_modules/kareem/index.js:273:21
+    at /Users/alexamil/WebstormProjects/cdt-now/node_modules/kareem/index.js:127:16
+    at _combinedTickCallback (internal/process/next_tick.js:73:7)
+    at process._tickCallback (internal/process/next_tick.js:104:9)
+
+
+I don't know why you don't have an issues tab, but it's pretty obnoxious that we can't file an issue.
+Maybe you made some changes recently that introduced potential for this NPE.
+
+thanks
+
+
+
 Mongoose findOrCreate Plugin [![Build Status](https://secure.travis-ci.org/drudge/mongoose-findorcreate.png?branch=master)](https://travis-ci.org/drudge/mongoose-findorcreate)
 ============================
 
