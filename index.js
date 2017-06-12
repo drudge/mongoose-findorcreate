@@ -35,15 +35,15 @@ function findOrCreatePlugin(schema, options) {
       }
     }
     this.findOne(conditions, function(err, result) {
-      if(err || result) {
-        if(options && options.upsert && !err) {
-          self.update(conditions, doc, function(err, count){
+      if (err || result) {
+        if (options && options.upsert && !err) {
+          self.update(conditions, doc, function(err, count) {
             self.findById(result._id, function(err, result) {
               callback(err, result, false);
             });
-          })
+          });
         } else {
-          callback(err, result, false)
+          callback(err, result, false);
         }
       } else {
         for (var key in doc) {
@@ -53,19 +53,20 @@ function findOrCreatePlugin(schema, options) {
         // If the value contain `$` remove the key value pair
         var keys = Object.keys(conditions);
 
-        for (var z = 0; z < keys.length; z++){
-          if (JSON.stringify(conditions[keys[z]]).indexOf('$') !== -1) {
+        for (var z = 0; z < keys.length; z++) {
+          var value = JSON.stringify(conditions[keys[z]]);
+          if (value && value.indexOf('$') !== -1) {
             delete conditions[keys[z]];
           }
-        };
+        }
 
-        var obj = new self(conditions)
+        var obj = new self(conditions);
         obj.save(function(err) {
           callback(err, obj, true);
         });
       }
-    })
-  }
+    });
+  };
 }
 
 /**
