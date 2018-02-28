@@ -9,7 +9,7 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 var findOrCreate = require('../');
 
-mongoose.connect('mongodb://localhost/findOrCreate')
+mongoose.connect('mongodb://localhost/findOrCreate');
 mongoose.connection.on('error', function (err) {
   console.error('MongoDB error: ' + err.message);
   console.error('Make sure a mongoDB server is running and accessible by this application')
@@ -25,8 +25,10 @@ ClickSchema.plugin(findOrCreate);
 var Click = mongoose.model('Click', ClickSchema);
 
 after(function(done) {
-  mongoose.connection.db.dropDatabase()
-  done();
+  mongoose.connection.db.dropDatabase(function() {
+    mongoose.connection.close();
+    done();
+  });
 })
 
 describe('findOrCreate', function() {
