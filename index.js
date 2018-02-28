@@ -7,7 +7,7 @@
 function findOrCreatePlugin(schema, options) {
   schema.statics.findOrCreate = function findOrCreate(conditions, doc, options, callback) {
     var self = this;
-    var Promise = self.base.Promise.ES6;
+    var Promise = self.base.Promise.ES6 || self.base.Promise;
     if (arguments.length < 4) {
       if (typeof options === 'function') {
         // Scenario: findOrCreate(conditions, doc, callback)
