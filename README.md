@@ -35,7 +35,7 @@ You can also include properties that aren't used in the
 find call, but will be added to the object if it is created.
 
 ```javascript
-Click.create({ip: '127.0.0.1'}, {browser: 'Mozilla'}, function(err, val) {
+Click.findOrCreate({ip: '127.0.0.1'}, {browser: 'Mozilla'}, function(err, val) {
   Click.findOrCreate({ip: '127.0.0.1'}, {browser: 'Chrome'}, function(err, click) {
     console.log('A click from "%s" using "%s" was found', click.ip, click.browser);
     // prints A click from "127.0.0.1" using "Mozilla" was found
