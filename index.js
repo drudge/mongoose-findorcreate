@@ -7,8 +7,8 @@
 function findOrCreatePlugin(schema, options) {
   schema.statics.findOrCreate = function findOrCreate(conditions, doc, options, callback) {
     var self = this;
-    // When using Mongoose 5.0.x and upper, we must use self.base.Promise
-    var Promise = self.base.Promise.ES6 ? self.base.Promise.ES6 : self.base.Promise;
+    
+    var Promise = global.Promise.ES6 ? global.Promise.ES6 : global.Promise;
     if (arguments.length < 4) {
       if (typeof options === 'function') {
         // Scenario: findOrCreate(conditions, doc, callback)
@@ -35,37 +35,53 @@ function findOrCreatePlugin(schema, options) {
         });
       }
     }
-    this.findOne(conditions, function(err, result) {
-      if (err || result) {
-        if (options && options.upsert && !err) {
-          self.update(conditions, doc, function(err, count) {
-            self.findById(result._id, function(err, result) {
-              callback(err, result, false);
-            });
-          });
-        } else {
-          callback(err, result, false);
+    //mongoose 7.0.x does not support callbacks so we use findOne().exec().then().catch()
+    this.findOne(conditions).exec().then(function(result){
+      if(result == null){
+        for(var key in doc){
+          conditions[key] = doc[key];
         }
-      } else {
-        for (var key in doc) {
-         conditions[key] = doc[key];
-        }
-
-        // If the value contain `$` remove the key value pair
         var keys = Object.keys(conditions);
-
-        for (var z = 0; z < keys.length; z++) {
+        for(var z = 0;z < keys.length; z++){
           var value = JSON.stringify(conditions[keys[z]]);
-          if (value && value.indexOf('$') !== -1) {
+          if(value && value.indexOf('$') !== -1){
             delete conditions[keys[z]];
           }
         }
-
         var obj = new self(conditions);
-        obj.save(function(err) {
-          callback(err, obj, true);
+        obj.save().then(function(result){
+          err = null;
+          callback(err,obj,true);
+        }).catch(function(err){
+          console.log(err);
         });
+
       }
+      else{
+        if(options && options.upsert){
+          self.update(conditions,doc).exec().then(function(count){
+            self.findById(result._id).exec().then(function(result){
+
+              err = null;
+              callback(err,result,false);
+            }).catch(function(err){
+              result = null;
+              callback(err,result,false);
+            });
+          }).catch(function(err){
+              result = null;
+              callback(err,result,false);
+          });
+        }
+        else{
+          err = null;
+          callback(err,result,false);
+        }
+      }
+
+
+    }).catch(function(err){
+        console.log(err);
     });
   };
 }
