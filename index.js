@@ -51,15 +51,9 @@ function findOrCreatePlugin(schema, options) {
          conditions[key] = doc[key];
         }
 
-        // If the value contain `$` remove the key value pair
-        var keys = Object.keys(conditions);
-
-        for (var z = 0; z < keys.length; z++) {
-          var value = JSON.stringify(conditions[keys[z]]);
-          if (value && value.indexOf('$') !== -1) {
-            delete conditions[keys[z]];
-          }
-        }
+        // Prune any keys starting with `$` since those are query operators and not data.
+        // This library does not support models which have keys starting with `$`.
+        removeQueryOperators(conditions);
 
         var obj = new self(conditions);
         obj.save(function(err) {
@@ -68,6 +62,22 @@ function findOrCreatePlugin(schema, options) {
       }
     });
   };
+}
+
+function removeQueryOperators(o) {
+  var keys = Object.keys(o);
+
+  for (var z = 0; z < keys.length; z++) {
+    var key = keys[z];
+    if (key[0] === '$') {
+      delete o[key];
+    } else {
+      var subObject = o[key];
+      if (typeof subObject === 'object' && subObject !== null) {
+        removeQueryOperators(subObject);
+      }
+    }
+  }
 }
 
 /**

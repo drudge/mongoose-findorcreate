@@ -68,6 +68,26 @@ describe('findOrCreate', function() {
     })
   })
 
+  it("should add values with a $ when creating the object", function(done) {
+    Click.findOrCreate({
+      ip: '$notAnInternetProtocolAddress'
+    }, function(err, click) {
+      click.ip.should.eql('$notAnInternetProtocolAddress');
+      done();
+    })
+  })
+
+  it("should add values with a $ when creating an object different from the find call", function(done) {
+    Click.findOrCreate({
+      ip: '$notIp'
+    }, {
+      ip: '$expected'
+    }, function(err, click) {
+      click.ip.should.eql('$expected');
+      done();
+    })
+  })
+
   it("should not add properties with a $ when creating the object", function(done) {
     Click.findOrCreate({
       ip: '127.2.2.2',
