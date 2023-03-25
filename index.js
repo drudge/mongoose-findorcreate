@@ -51,7 +51,8 @@ function findOrCreatePlugin(schema, options) {
           err = null;
           callback(err,obj,true);
         }).catch(function(err){
-          console.log(err);
+            result = null;
+            callback(err,result,false);
         });
 
       }
@@ -79,7 +80,8 @@ function findOrCreatePlugin(schema, options) {
 
 
     }).catch(function(err){
-        console.log(err);
+        result = null;
+        callback(err,result,false);
     });
   };
 }
