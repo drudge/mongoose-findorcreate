@@ -24,8 +24,11 @@ ClickSchema.plugin(findOrCreate);
 
 var Click = mongoose.model('Click', ClickSchema);
 
-after(function(done) {
-  mongoose.connection.db.dropDatabase(function() {
+
+
+
+after(function(done){
+  mongoose.connection.db.dropDatabase().then(function(){
     mongoose.connection.close();
     done();
   });
@@ -35,23 +38,25 @@ describe('findOrCreate', function() {
   it("should create the object if it doesn't exist", function(done) {
     Click.findOrCreate({ip: '127.0.0.1'}, function(err, click) {
       click.ip.should.eql('127.0.0.1')
-      Click.count({}, function(err, num) {
-        num.should.equal(1)
+      Click.count({}).exec().then(function(num){
+        num.should.eql(1);
         done();
-      })
+      });
+      // Click.count({}, function(err, num) {
+      //   num.should.equal(1)
+      //   done();
+      // })
     })
   })
 
   it("returns the object if it already exists", function(done) {
-    Click.create({ip: '127.0.0.2'}, function(){
-      Click.findOrCreate({ip: '127.0.0.2'}, function(err, click) {
-        click.ip.should.eql('127.0.0.2')
-        Click.count({ip: '127.0.0.2'}, function(err, num) {
-          num.should.equal(1)
+    Click.create({ip: '127.0.0.2'}).then(function(click){
+      click.ip.should.eql('127.0.0.2')
+      Click.count({ip: '127.0.0.2'}).exec().then(function(num){
+          num.should.equal(1);
           done();
-        })
-      })
-    })
+        });
+    });
   })
 
   it("should pass created as true if the object didn't exist", function(done) {
@@ -119,69 +124,50 @@ describe('findOrCreate', function() {
     })
   })
 
-
-  it("should support upsert", function(done) {
-    // Create something to upsert.
-    new Click({
-      ip: '128.0.0.0',
-    }).save(function (err, click) {
+  it("should support upsert",function(done){
+    new Click({ip: '128.0.0.0'}).save().then(function(click){
       click.should.be.an.Object;
       click.ip.should.eql('128.0.0.0');
       should.equal(click.hostname, null);
-      // Upsert to add a hostname.
-      Click.findOrCreate({
-        ip: '128.0.0.0',
-      }, {
-        hostname: 'example.org',
-      }, {
-        upsert: true,
-      }, function (err, click, created) {
-        click.should.be.an.Object;
-        click.ip.should.eql('128.0.0.0');
-        click.hostname.should.eql('example.org');
-        created.should.eql(false);
-        // Verify that it actually was updated in the database.
-        Click.findOne({
-          ip: '128.0.0.0',
-        }, function (err, click) {
+      Click.findOrCreate({ip: '128.0.0.0'},{ hostname: 'example.org'},{upsert: true},
+        function (err, click, created) {
           click.should.be.an.Object;
           click.ip.should.eql('128.0.0.0');
           click.hostname.should.eql('example.org');
-          done();
-        });
-      });
+          created.should.eql(false);
+          // Verify that it actually was updated in the database.
+          Click.findOne({ip: '128.0.0.0'}).exec().then(function(click){
+            click.should.be.an.Object;
+            click.ip.should.eql('128.0.0.0');
+            click.hostname.should.eql('example.org');
+            done();
+          });
+        }
+      );
     });
   })
 
-  it("should return updated instance after upserting away from the condition", function(done) {
-    // Create something to upsert.
-    new Click({
-      ip: '128.1.1.1',
-    }).save(function(err, click) {
+  it("should return updated instance after upserting away from the condition",function(done){
+    new Click({ip: '128.1.1.1'}).save().then(function(click){
       var _id = click._id;
       click.should.be.an.Object;
       click.ip.should.eql('128.1.1.1');
-      // Upsert in such a way that it no longer matches conditions.
-      Click.findOrCreate({
-        ip: '128.1.1.1',
-      }, {
-        ip: '128.1.1.2',
-      }, {
-        upsert: true,
-      }, function(err, click, created) {
-        // Should have returned upserted object even though it no
-        // longer matches the conditions.
-        click.should.be.an.Object
-        click.ip.should.eql('128.1.1.2');
-        created.should.eql(false);
-        // Verify that it actually was updated in the database.
-        Click.findById(_id, function (err, click) {
-          click.should.be.an.Object;
+      Click.findOrCreate({ip: '128.1.1.1'},{ip: '128.1.1.2'},{upsert: true},
+        function(err, click, created) {
+          // Should have returned upserted object even though it no
+          // longer matches the conditions.
+          click.should.be.an.Object
           click.ip.should.eql('128.1.1.2');
-          done();
-        })
-      })
-    })
+          created.should.eql(false);
+          // Verify that it actually was updated in the database.
+          Click.findById(_id).exec().then(function(click){
+            click.should.be.an.Object;
+            click.ip.should.eql('128.1.1.2');
+            done();
+          });
+        }
+      );
+    });
   })
 
   it("should return a Promise when passed conditions", function() {

@@ -41,11 +41,9 @@ function findOrCreatePlugin(schema, options) {
         for(var key in doc){
           conditions[key] = doc[key];
         }
-
         // Prune any keys starting with `$` since those are query operators and not data.
         // This library does not support models which have keys starting with `$`.
         removeQueryOperators(conditions);
-
         var obj = new self(conditions);
         obj.save().then(function(result){
           err = null;
@@ -58,7 +56,7 @@ function findOrCreatePlugin(schema, options) {
       }
       else{
         if(options && options.upsert){
-          self.update(conditions,doc).exec().then(function(count){
+          self.updateOne(conditions,doc).exec().then(function(count){
             self.findById(result._id).exec().then(function(result){
 
               err = null;
@@ -73,6 +71,7 @@ function findOrCreatePlugin(schema, options) {
           });
         }
         else{
+          
           err = null;
           callback(err,result,false);
         }

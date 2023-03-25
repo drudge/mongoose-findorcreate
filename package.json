@@ -14,9 +14,9 @@
         "url": "git://github.com/drudge/mongoose-findorcreate"
     },
     "devDependencies": {
-        "should": ">= 0.2.1",
         "mocha": ">= 2.0.0",
-        "mongoose": ">= 3.0"
+        "mongoose": "^7.0.3",
+        "should": ">= 0.2.1"
     },
     "scripts": {
         "test": "mocha -u bdd -R spec -c ./test/*test.js"
