@@ -1,7 +1,7 @@
 {
     "name": "mongoose-findorcreate",
     "description": "Mongoose plugin that adds findOrCreate",
-    "version": "3.0.0",
+    "version": "4.0.0",
     "author": "Nicholas Penree <nick@penree.com>",
     "keywords": [
         "mongodb",
@@ -14,15 +14,15 @@
         "url": "git://github.com/drudge/mongoose-findorcreate"
     },
     "devDependencies": {
-        "mocha": ">= 2.0.0",
+        "mocha": "^10.2.0",
         "mongoose": "^7.0.3",
-        "should": ">= 0.2.1"
+        "should": "^13.2.3"
     },
     "scripts": {
         "test": "mocha -u bdd -R spec -c ./test/*test.js"
     },
     "license": "MIT",
     "engine": {
-        "node": ">= 4.0"
+      "node": ">=14.0.0"
     }
 }
